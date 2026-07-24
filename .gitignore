@@ -144,3 +144,6 @@ Thumbs.db
 
 # Excluded documents
 DEVELOPMENT.md
+
+# Storage (Zip Exports, Raw Logs, etc.)
+/storage/
