@@ -4,7 +4,7 @@
 
 **An Enterprise Multi-Tenant Headless CMS Platform**
 
-*Equipped with asynchronous background processing, Redis caching, RabbitMQ workers, and automated CI/CD pipelines.*
+_Equipped with asynchronous background processing, Redis caching, RabbitMQ workers, and automated CI/CD pipelines._
 
 <br />
 
@@ -20,35 +20,34 @@
 
 </div>
 
----
-
 ## ✨ Key Features
 
-* **🔐 Security & Auth:** JWT, Refresh Tokens, and robust RBAC (Role-Based Access Control).
-* **🏢 True Multi-Tenancy:** Secure tenant context isolation and management middleware.
-* **📝 Headless CMS:** Dynamic content management, hierarchical categories, and draft-to-publish workflows.
-* **⚙️ Background Processing:** RabbitMQ-powered workers for non-blocking asynchronous tasks (like ZIP exports).
-* **⚡ High Performance:** Sub-millisecond reads powered by Redis caching and highly optimized database queries.
-
----
+- **🔐 Security & Auth:** JWT, Refresh Tokens, and robust RBAC (Role-Based Access Control).
+- **🏢 True Multi-Tenancy:** Secure tenant context isolation and management middleware.
+- **📝 Headless CMS:** Dynamic content management, hierarchical categories, and draft-to-publish workflows.
+- **⚙️ Background Processing:** RabbitMQ-powered workers for non-blocking asynchronous tasks (like ZIP exports).
+- **⚡ High Performance:** Sub-millisecond reads powered by Redis caching and highly optimized database queries.
 
 ## 📦 Getting Started
 
 ### Prerequisites
 
 Ensure you have the following installed on your local machine:
+
 - **Node.js** (v18 or higher)
 - **Docker** & **Docker Compose**
 
 ### Installation
 
 1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/luqelha/atlas-platform.git
    cd atlas-platform
    ```
 
 2. **Install dependencies:**
+
    ```bash
    npm install
    ```
@@ -58,12 +57,14 @@ Ensure you have the following installed on your local machine:
 
 4. **Spin up Infrastructure:**
    Start the Database, Redis, and RabbitMQ via Docker:
+
    ```bash
    docker-compose up -d
    ```
 
 5. **Run Migrations:**
    Apply the database schema:
+
    ```bash
    npx prisma migrate dev
    ```
@@ -73,20 +74,17 @@ Ensure you have the following installed on your local machine:
    npm run start:dev
    ```
 
----
-
 ## 📚 Documentation
 
 Detailed API documentation is automatically generated via Swagger. Once the server is running, navigate to:
 
-👉 **`/api/docs`** *(Default Route)*
+👉 **`/api/docs`** _(Default Route)_
 
 You can also check out our planning documents:
+
 - [📝 Product Requirements (PRD)](PRODUCT_REQUIREMENTS.md)
 - [🗺️ Roadmap](ROADMAP.md)
 - [📅 Development Sprint Plan](DEVELOPMENT.md)
-
----
 
 ## 📄 License
 
