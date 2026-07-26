@@ -1,15 +1,26 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { Logger } from 'nestjs-pino';
+
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  app.useLogger(app.get(Logger));
+
   // Enable CORS
   app.enableCors();
-  
+
   // Prefix all routes with /api
   app.setGlobalPrefix('api');
+
+  // Register Global Exception Filter
+  app.useGlobalFilters(new HttpExceptionFilter());
+
+  // Register Global Validation Pipe
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
   // Set up Swagger
   const config = new DocumentBuilder()

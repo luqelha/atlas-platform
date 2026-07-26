@@ -28,7 +28,7 @@ export class WorkerController {
           status: JobStatus.PROCESSING,
           progress: 20,
         }),
-        { KEEPTTL: true }
+        { KEEPTTL: true },
       );
 
       const result = await this.compressionService.compressLogs(jobId);
@@ -41,7 +41,7 @@ export class WorkerController {
           filename: result.zipName,
           completedAt: new Date(),
         }),
-        { KEEPTTL: true }
+        { KEEPTTL: true },
       );
 
       this.logger.log(`ZIP created: ${result.zipName}`);
@@ -54,10 +54,9 @@ export class WorkerController {
           progress: 0,
           error: error.message,
         }),
-        { KEEPTTL: true }
+        { KEEPTTL: true },
       );
       this.logger.error(`Job ${jobId} failed: ${error.message}`);
     }
   }
 }
-

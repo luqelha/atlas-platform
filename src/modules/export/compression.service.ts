@@ -19,7 +19,7 @@ export class CompressionService {
     return new Promise((resolve, reject) => {
       const zipName = `export-${jobId}.zip`;
       const output = fs.createWriteStream(path.join(this.exportPath, zipName));
-      
+
       const archive = new ZipArchive({
         zlib: { level: 9 },
       });
@@ -36,11 +36,8 @@ export class CompressionService {
 
       if (fs.existsSync(this.rawLogPath)) {
         const files = fs.readdirSync(this.rawLogPath);
-        files.forEach(file => {
-          archive.file(
-            path.join(this.rawLogPath, file),
-            { name: file },
-          );
+        files.forEach((file) => {
+          archive.file(path.join(this.rawLogPath, file), { name: file });
         });
       }
 
@@ -48,4 +45,3 @@ export class CompressionService {
     });
   }
 }
-

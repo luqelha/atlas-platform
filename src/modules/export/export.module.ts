@@ -22,6 +22,6 @@ import { CompressionService } from './compression.service';
     ]),
   ],
   controllers: [ExportController, WorkerController],
-  providers: [ExportService, CompressionService]
+  providers: [ExportService, CompressionService],
 })
 export class ExportModule {}
