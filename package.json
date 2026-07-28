@@ -6,6 +6,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
+    "dev:all": "concurrently \"npm run start:dev\" \"npx prisma studio\"",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -62,6 +63,7 @@
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.65.0",
     "@typescript-eslint/parser": "^8.65.0",
+    "concurrently": "^10.0.4",
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",

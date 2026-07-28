@@ -17,27 +17,28 @@ model Tenant {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users     TenantUser[]
+  users TenantUser[]
 }
 
 model User {
   id           String   @id @default(uuid())
   email        String   @unique
   passwordHash String
+  refreshToken String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  tenants      TenantUser[]
+  tenants TenantUser[]
 }
 
 model TenantUser {
-  id        String   @id @default(uuid())
-  tenantId  String
-  userId    String
-  role      String   @default("VIEWER") // e.g., ADMIN, EDITOR, VIEWER
+  id       String @id @default(uuid())
+  tenantId String
+  userId   String
+  role     String @default("VIEWER") // e.g., ADMIN, EDITOR, VIEWER
 
-  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, userId])
 }

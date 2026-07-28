@@ -9,4 +9,8 @@ export const envValidationSchema = Joi.object({
   RABBITMQ_URL: Joi.string().required(),
   QUEUE_NAME: Joi.string().default('log_export_queue'),
   REDIS_URL: Joi.string().required(),
+  JWT_SECRET: Joi.string().required(),
+  JWT_EXPIRATION: Joi.string().default('15m'),
+  JWT_REFRESH_SECRET: Joi.string().required(),
+  JWT_REFRESH_EXPIRATION: Joi.string().default('7d'),
 });

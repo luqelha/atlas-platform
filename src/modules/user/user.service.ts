@@ -27,14 +27,14 @@ export class UserService {
       },
     });
 
-    const { passwordHash, ...result } = user;
+    const { passwordHash, refreshToken, ...result } = user;
     return result;
   }
 
   async findAll() {
     const users = await this.prisma.user.findMany();
     return users.map((user) => {
-      const { passwordHash, ...result } = user;
+      const { passwordHash, refreshToken, ...result } = user;
       return result;
     });
   }
@@ -48,7 +48,7 @@ export class UserService {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
 
-    const { passwordHash, ...result } = user;
+    const { passwordHash, refreshToken, ...result } = user;
     return result;
   }
 
@@ -59,6 +59,7 @@ export class UserService {
     if (updateUserDto.password) {
       const salt = await bcrypt.genSalt();
       data.passwordHash = await bcrypt.hash(updateUserDto.password, salt);
+      data.refreshToken = null; // Invalidate refresh token on password change
       delete data.password;
     }
 
@@ -76,7 +77,7 @@ export class UserService {
       data,
     });
 
-    const { passwordHash, ...result } = user;
+    const { passwordHash, refreshToken, ...result } = user;
     return result;
   }
 
@@ -97,6 +98,24 @@ export class UserService {
   async findByEmailForAuth(email: string) {
     return this.prisma.user.findUnique({
       where: { email },
+    });
+  }
+
+  async findByIdForAuth(id: string) {
+    return this.prisma.user.findUnique({
+      where: { id },
+    });
+  }
+
+  async updateRefreshToken(id: string, refreshToken: string | null) {
+    let refreshTokenHash = null;
+    if (refreshToken) {
+      const salt = await bcrypt.genSalt();
+      refreshTokenHash = await bcrypt.hash(refreshToken, salt);
+    }
+    await this.prisma.user.update({
+      where: { id },
+      data: { refreshToken: refreshTokenHash },
     });
   }
 }

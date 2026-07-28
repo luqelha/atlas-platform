@@ -12,6 +12,7 @@ import { AuthService } from '../services/auth.service';
 import { RegisterDto } from '../dto/register.dto';
 import { LoginDto } from '../dto/login.dto';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('auth')
@@ -45,5 +46,27 @@ export class AuthController {
   getProfile(@Request() req) {
     // req.user is populated by JwtStrategy
     return req.user;
+  }
+
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Logout user and invalidate refresh token' })
+  @ApiResponse({ status: 200, description: 'User successfully logged out.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  async logout(@Request() req) {
+    return this.authService.logout(req.user.userId);
+  }
+
+  @Post('refresh')
+  @UseGuards(JwtRefreshGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Refresh access token' })
+  @ApiResponse({ status: 200, description: 'New tokens generated successfully.' })
+  @ApiResponse({ status: 401, description: 'Invalid refresh token.' })
+  async refresh(@Request() req) {
+    return this.authService.refreshTokens(req.user.sub, req.user.refreshToken);
   }
 }
