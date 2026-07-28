@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../database/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -16,16 +17,16 @@ export class UserService {
       throw new ConflictException('Email already in use');
     }
 
-    // Since this is Day 8 (before Auth in Day 9), we will just mock the password hash for now.
-    // In Day 9, we'll hash the actual password using bcrypt/argon2.
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(createUserDto.password, salt);
+
     const user = await this.prisma.user.create({
       data: {
         email: createUserDto.email,
-        passwordHash: 'mock-hash-' + createUserDto.password, // TODO: Hash password on Day 9
+        passwordHash: hashedPassword,
       },
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash, ...result } = user;
     return result;
   }
@@ -33,7 +34,6 @@ export class UserService {
   async findAll() {
     const users = await this.prisma.user.findMany();
     return users.map((user) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { passwordHash, ...result } = user;
       return result;
     });
@@ -48,17 +48,17 @@ export class UserService {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash, ...result } = user;
     return result;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    await this.findOne(id); // Ensure user exists
+    await this.findOne(id);
 
     const data: any = { ...updateUserDto };
     if (updateUserDto.password) {
-      data.passwordHash = 'mock-hash-' + updateUserDto.password; // TODO: Hash password on Day 9
+      const salt = await bcrypt.genSalt();
+      data.passwordHash = await bcrypt.hash(updateUserDto.password, salt);
       delete data.password;
     }
 
@@ -76,13 +76,12 @@ export class UserService {
       data,
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash, ...result } = user;
     return result;
   }
 
   async remove(id: string) {
-    await this.findOne(id); // Ensure user exists
+    await this.findOne(id);
 
     await this.prisma.user.delete({
       where: { id },
@@ -92,7 +91,12 @@ export class UserService {
   }
 
   async getProfile(id: string) {
-    // In Day 9, this will extract user ID from the JWT token in Request object
     return this.findOne(id);
+  }
+
+  async findByEmailForAuth(email: string) {
+    return this.prisma.user.findUnique({
+      where: { email },
+    });
   }
 }
