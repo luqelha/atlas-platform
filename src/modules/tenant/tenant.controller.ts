@@ -14,6 +14,9 @@ import { TenantService } from './tenant.service';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { UpdateTenantDto } from './dto/update-tenant.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RbacGuard } from '../../common/guards/rbac.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { Role } from '../../common/enums/role.enum';
 
 @ApiTags('tenants')
 @Controller('tenants')
@@ -46,6 +49,8 @@ export class TenantController {
   }
 
   @Patch(':id')
+  @UseGuards(RbacGuard)
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Update a tenant' })
   @ApiResponse({ status: 200, description: 'The tenant has been successfully updated.' })
   update(@Param('id') id: string, @Body() updateTenantDto: UpdateTenantDto) {
@@ -53,6 +58,8 @@ export class TenantController {
   }
 
   @Delete(':id')
+  @UseGuards(RbacGuard)
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Delete a tenant' })
   @ApiResponse({ status: 200, description: 'The tenant has been successfully deleted.' })
   remove(@Param('id') id: string) {
