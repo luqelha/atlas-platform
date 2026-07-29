@@ -1,0 +1,61 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { TenantService } from './tenant.service';
+import { CreateTenantDto } from './dto/create-tenant.dto';
+import { UpdateTenantDto } from './dto/update-tenant.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+
+@ApiTags('tenants')
+@Controller('tenants')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
+export class TenantController {
+  constructor(private readonly tenantService: TenantService) {}
+
+  @Post()
+  @ApiOperation({ summary: 'Create a new tenant' })
+  @ApiResponse({ status: 201, description: 'The tenant has been successfully created.' })
+  create(@Body() createTenantDto: CreateTenantDto, @Request() req: any) {
+    const userId = req.user?.sub || req.user?.userId;
+    return this.tenantService.create(createTenantDto, userId);
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Get all tenants for current user' })
+  @ApiResponse({ status: 200, description: 'Return all tenants for the current user.' })
+  findAll(@Request() req: any) {
+    const userId = req.user?.sub || req.user?.userId;
+    return this.tenantService.findAllForUser(userId);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a tenant by ID' })
+  @ApiResponse({ status: 200, description: 'Return a tenant.' })
+  findOne(@Param('id') id: string) {
+    return this.tenantService.findOne(id);
+  }
+
+  @Patch(':id')
+  @ApiOperation({ summary: 'Update a tenant' })
+  @ApiResponse({ status: 200, description: 'The tenant has been successfully updated.' })
+  update(@Param('id') id: string, @Body() updateTenantDto: UpdateTenantDto) {
+    return this.tenantService.update(id, updateTenantDto);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete a tenant' })
+  @ApiResponse({ status: 200, description: 'The tenant has been successfully deleted.' })
+  remove(@Param('id') id: string) {
+    return this.tenantService.remove(id);
+  }
+}
