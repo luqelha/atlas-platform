@@ -1,4 +1,5 @@
 import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
@@ -10,6 +11,8 @@ import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
 import { envValidationSchema } from './config/env.validation';
 import { TenantMiddleware } from './common/middleware/tenant.middleware';
+import { AuditModule } from './modules/audit/audit.module';
+import { ActivityTrackingInterceptor } from './common/interceptors/activity-tracking.interceptor';
 
 @Module({
   imports: [
@@ -31,9 +34,16 @@ import { TenantMiddleware } from './common/middleware/tenant.middleware';
     UserModule,
     AuthModule,
     TenantModule,
+    AuditModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ActivityTrackingInterceptor,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

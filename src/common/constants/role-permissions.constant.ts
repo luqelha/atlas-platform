@@ -13,6 +13,7 @@ export const RolePermissions: Record<Role, Permission[]> = {
     Permission.PUBLISH_CONTENT,
     Permission.MANAGE_MEDIA,
     Permission.READ_MEDIA,
+    Permission.READ_AUDIT_LOGS,
   ],
   [Role.EDITOR]: [
     Permission.READ_USERS,

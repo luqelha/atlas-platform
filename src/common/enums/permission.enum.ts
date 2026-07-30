@@ -16,4 +16,7 @@ export enum Permission {
   // Media
   MANAGE_MEDIA = 'MANAGE_MEDIA',
   READ_MEDIA = 'READ_MEDIA',
+
+  // Audit
+  READ_AUDIT_LOGS = 'READ_AUDIT_LOGS',
 }

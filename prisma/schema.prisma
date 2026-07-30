@@ -42,3 +42,19 @@ model TenantUser {
 
   @@unique([tenantId, userId])
 }
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  tenantId  String?
+  userId    String?
+  action    String
+  entity    String?
+  entityId  String?
+  details   Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  // We intentionally do not use hard foreign keys for user/tenant
+  // to ensure audit logs persist even if a user/tenant is deleted.
+}
