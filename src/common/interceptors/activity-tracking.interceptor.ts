@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  NestInterceptor,
-  ExecutionContext,
-  CallHandler,
-} from '@nestjs/common';
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Reflector } from '@nestjs/core';
@@ -33,10 +28,10 @@ export class ActivityTrackingInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap((data) => {
         const { action, entity } = trackOptions;
-        
+
         const tenantId = request.tenant?.id || request.tenantId;
         const userId = request.user?.id || request.user?.userId || request.user?.sub;
-        
+
         const ipAddress = request.ip || request.connection?.remoteAddress;
         const userAgent = request.headers['user-agent'];
 
@@ -49,18 +44,20 @@ export class ActivityTrackingInterceptor implements NestInterceptor {
         }
 
         // We run the audit logging asynchronously so it doesn't block the request
-        this.auditService.logActivity({
-          tenantId,
-          userId,
-          action,
-          entity,
-          entityId,
-          details: request.body, // or you can pick what details you want
-          ipAddress,
-          userAgent,
-        }).catch((err) => {
-          console.error('Failed to log activity in ActivityTrackingInterceptor', err);
-        });
+        this.auditService
+          .logActivity({
+            tenantId,
+            userId,
+            action,
+            entity,
+            entityId,
+            details: request.body, // or you can pick what details you want
+            ipAddress,
+            userAgent,
+          })
+          .catch((err) => {
+            console.error('Failed to log activity in ActivityTrackingInterceptor', err);
+          });
       }),
     );
   }
