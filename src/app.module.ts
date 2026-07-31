@@ -13,6 +13,7 @@ import { envValidationSchema } from './config/env.validation';
 import { TenantMiddleware } from './common/middleware/tenant.middleware';
 import { AuditModule } from './modules/audit/audit.module';
 import { ActivityTrackingInterceptor } from './common/interceptors/activity-tracking.interceptor';
+import { CmsModule } from './modules/cms/cms.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { ActivityTrackingInterceptor } from './common/interceptors/activity-trac
     AuthModule,
     TenantModule,
     AuditModule,
+    CmsModule,
   ],
   controllers: [AppController],
   providers: [

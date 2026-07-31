@@ -17,7 +17,8 @@ model Tenant {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users TenantUser[]
+  users      TenantUser[]
+  categories Category[]
 }
 
 model User {
@@ -57,4 +58,21 @@ model AuditLog {
 
   // We intentionally do not use hard foreign keys for user/tenant
   // to ensure audit logs persist even if a user/tenant is deleted.
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String
+  description String?
+  parentId    String?
+  tenantId    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  parent   Category?  @relation("CategoryToCategory", fields: [parentId], references: [id], onDelete: SetNull)
+  children Category[] @relation("CategoryToCategory")
+  tenant   Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, slug])
 }
