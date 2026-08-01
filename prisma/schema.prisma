@@ -19,6 +19,7 @@ model Tenant {
 
   users      TenantUser[]
   categories Category[]
+  contents   Content[]
 }
 
 model User {
@@ -29,7 +30,8 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  tenants TenantUser[]
+  tenants  TenantUser[]
+  contents Content[]
 }
 
 model TenantUser {
@@ -73,6 +75,32 @@ model Category {
   parent   Category?  @relation("CategoryToCategory", fields: [parentId], references: [id], onDelete: SetNull)
   children Category[] @relation("CategoryToCategory")
   tenant   Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contents Content[]
+
+  @@unique([tenantId, slug])
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Content {
+  id          String        @id @default(uuid())
+  title       String
+  slug        String
+  body        String
+  status      ContentStatus @default(DRAFT)
+  publishedAt DateTime?
+  authorId    String
+  tenantId    String
+  categoryId  String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  author   User      @relation(fields: [authorId], references: [id])
+  tenant   Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
   @@unique([tenantId, slug])
 }
