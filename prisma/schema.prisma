@@ -20,6 +20,7 @@ model Tenant {
   users      TenantUser[]
   categories Category[]
   contents   Content[]
+  medias     Media[]
 }
 
 model User {
@@ -103,4 +104,14 @@ model Content {
   category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
   @@unique([tenantId, slug])
+}
+
+model Media {
+  id        String   @id @default(uuid())
+  url       String
+  type      String   // e.g. "image/png", "application/pdf"
+  tenantId  String
+  createdAt DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }

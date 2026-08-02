@@ -1,4 +1,6 @@
 import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -14,6 +16,7 @@ import { TenantMiddleware } from './common/middleware/tenant.middleware';
 import { AuditModule } from './modules/audit/audit.module';
 import { ActivityTrackingInterceptor } from './common/interceptors/activity-tracking.interceptor';
 import { CmsModule } from './modules/cms/cms.module';
+import { MediaModule } from './modules/media/media.module';
 
 @Module({
   imports: [
@@ -30,6 +33,10 @@ import { CmsModule } from './modules/cms/cms.module';
         autoLogging: false,
       },
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'storage', 'uploads'),
+      serveRoot: '/uploads',
+    }),
     ExportModule,
     DatabaseModule,
     UserModule,
@@ -37,6 +44,7 @@ import { CmsModule } from './modules/cms/cms.module';
     TenantModule,
     AuditModule,
     CmsModule,
+    MediaModule,
   ],
   controllers: [AppController],
   providers: [
