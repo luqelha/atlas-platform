@@ -61,7 +61,7 @@ export class ContentService {
   }
 
   async findAll(tenantId: string, queryContentDto: QueryContentDto): Promise<PageDto<Content>> {
-    const { search, status, categoryId, authorId, page, take, order, skip } = queryContentDto;
+    const { search, status, categoryId, authorId, take, order, skip } = queryContentDto;
 
     const where: Prisma.ContentWhereInput = {
       tenantId,
