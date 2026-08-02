@@ -8,11 +8,13 @@ import {
   Delete,
   UseGuards,
   Request,
+  Query,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
 import { ContentService } from '../services/content.service';
 import { CreateContentDto } from '../dto/create-content.dto';
 import { UpdateContentDto } from '../dto/update-content.dto';
+import { QueryContentDto } from '../dto/query-content.dto';
 import { ContentEntity } from '../entities/content.entity';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RbacGuard } from '../../../common/guards/rbac.guard';
@@ -51,9 +53,9 @@ export class ContentController {
   @Get()
   @Permissions(Permission.READ_CONTENT)
   @ApiOperation({ summary: 'Get all contents for the current tenant' })
-  @ApiResponse({ status: 200, description: 'Return all contents.', type: [ContentEntity] })
-  findAll(@CurrentTenant() tenant: any) {
-    return this.contentService.findAll(tenant.id);
+  @ApiResponse({ status: 200, description: 'Return paginated contents.' })
+  findAll(@CurrentTenant() tenant: any, @Query() queryContentDto: QueryContentDto) {
+    return this.contentService.findAll(tenant.id, queryContentDto);
   }
 
   @Get(':id')

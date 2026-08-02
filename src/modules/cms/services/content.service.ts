@@ -2,7 +2,10 @@ import { Injectable, NotFoundException, ConflictException } from '@nestjs/common
 import { PrismaService } from '../../../database/prisma.service';
 import { CreateContentDto } from '../dto/create-content.dto';
 import { UpdateContentDto } from '../dto/update-content.dto';
-import { Content, ContentStatus } from '@prisma/client';
+import { Content, ContentStatus, Prisma } from '@prisma/client';
+import { QueryContentDto } from '../dto/query-content.dto';
+import { PageDto } from '../../../common/dto/page.dto';
+import { PageMetaDto } from '../../../common/dto/page-meta.dto';
 
 @Injectable()
 export class ContentService {
@@ -57,11 +60,34 @@ export class ContentService {
     });
   }
 
-  async findAll(tenantId: string): Promise<Content[]> {
-    return this.prisma.content.findMany({
-      where: { tenantId },
-      orderBy: { createdAt: 'desc' },
+  async findAll(tenantId: string, queryContentDto: QueryContentDto): Promise<PageDto<Content>> {
+    const { search, status, categoryId, authorId, page, take, order, skip } = queryContentDto;
+
+    const where: Prisma.ContentWhereInput = {
+      tenantId,
+      ...(status && { status }),
+      ...(categoryId && { categoryId }),
+      ...(authorId && { authorId }),
+      ...(search && {
+        OR: [
+          { title: { contains: search, mode: 'insensitive' } },
+          { body: { contains: search, mode: 'insensitive' } },
+        ],
+      }),
+    };
+
+    const itemCount = await this.prisma.content.count({ where });
+
+    const data = await this.prisma.content.findMany({
+      where,
+      orderBy: { createdAt: order ? (order.toLowerCase() as Prisma.SortOrder) : 'desc' },
+      skip,
+      take,
     });
+
+    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto: queryContentDto });
+
+    return new PageDto(data, pageMetaDto);
   }
 
   async findOne(id: string, tenantId: string): Promise<Content> {
