@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { PrismaClientExceptionFilter } from './common/filters/prisma-client-exception.filter';
 import { Logger } from 'nestjs-pino';
 
 async function bootstrap() {
@@ -16,8 +17,8 @@ async function bootstrap() {
   // Prefix all routes with /api
   app.setGlobalPrefix('api');
 
-  // Register Global Exception Filter
-  app.useGlobalFilters(new HttpExceptionFilter());
+  // Register Global Exception Filters
+  app.useGlobalFilters(new HttpExceptionFilter(), new PrismaClientExceptionFilter());
 
   // Register Global Validation Pipe
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
