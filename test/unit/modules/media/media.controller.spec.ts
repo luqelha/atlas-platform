@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MediaController } from './media.controller';
-import { MediaService } from './media.service';
-import { PrismaService } from '../../database/prisma.service';
+import { MediaController } from '../../../../src/modules/media/media.controller';
+import { MediaService } from '../../../../src/modules/media/media.service';
+import { PrismaService } from '../../../../src/database/prisma.service';
 import { Reflector } from '@nestjs/core';
 
 describe('MediaController', () => {

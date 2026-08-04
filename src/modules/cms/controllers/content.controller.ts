@@ -47,7 +47,7 @@ export class ContentController {
     @Request() req: any,
     @Body() createContentDto: CreateContentDto,
   ) {
-    return this.contentService.create(tenant.id, req.user.id, createContentDto);
+    return this.contentService.create(tenant.id, req.user.userId, createContentDto);
   }
 
   @Get()

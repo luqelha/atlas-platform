@@ -14,6 +14,10 @@ export const RolePermissions: Record<Role, Permission[]> = {
     Permission.MANAGE_MEDIA,
     Permission.READ_MEDIA,
     Permission.READ_AUDIT_LOGS,
+    Permission.CREATE_CATEGORY,
+    Permission.READ_CATEGORY,
+    Permission.UPDATE_CATEGORY,
+    Permission.DELETE_CATEGORY,
   ],
   [Role.EDITOR]: [
     Permission.READ_USERS,
@@ -23,6 +27,9 @@ export const RolePermissions: Record<Role, Permission[]> = {
     Permission.PUBLISH_CONTENT,
     Permission.MANAGE_MEDIA,
     Permission.READ_MEDIA,
+    Permission.CREATE_CATEGORY,
+    Permission.READ_CATEGORY,
+    Permission.UPDATE_CATEGORY,
   ],
-  [Role.VIEWER]: [Permission.READ_CONTENT, Permission.READ_MEDIA],
+  [Role.VIEWER]: [Permission.READ_CONTENT, Permission.READ_MEDIA, Permission.READ_CATEGORY],
 };
