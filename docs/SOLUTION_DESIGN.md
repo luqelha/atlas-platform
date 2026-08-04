@@ -39,6 +39,13 @@ graph TD
 - **Tenant Resolver:** Intercepts every incoming request, extracting the `X-Tenant-ID` header or parsing the subdomain to inject the tenant context into the request lifecycle.
 - **JWT Strategy:** Validates access tokens and issues refresh tokens.
 - **RBAC Guard:** Ensures the authenticated user holds the required permissions for the requested resource within their current tenant context.
+- **Validation Pipeline:** Enforces robust DTO validation across all incoming payloads using `class-validator` and `class-transformer`. Invalid requests are instantly rejected, and unified error responses are mapped by a global exception filter.
+
+### 📝 Headless CMS Modules
+
+- **Content & Categories:** Supports robust hierarchical content management with publishing workflows (Draft/Published).
+- **Media Management:** Handles file uploads and asset delivery securely within the tenant boundary.
+- **Search & Pagination:** Optimized database querying enabling high-performance listing, filtering, and pagination over large tenant datasets.
 
 ### ⚡ Caching Strategy (Redis)
 
