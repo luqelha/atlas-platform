@@ -1,7 +1,18 @@
-import { Controller, Post, Get, Body, Param, Res, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  Param,
+  Res,
+  HttpStatus,
+  NotFoundException,
+} from '@nestjs/common';
 import { ExportService } from './export.service';
 import { Response } from 'express';
 import { ApiProperty } from '@nestjs/swagger';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export class ExportLogsDto {
   @ApiProperty({
@@ -42,5 +53,25 @@ export class ExportController {
       message: 'Job status retrieved successfully.',
       data,
     };
+  }
+
+  @Get('download/:jobId')
+  async download(@Param('jobId') jobId: string, @Res() res: Response) {
+    const exportPath = path.join(process.cwd(), 'storage', 'exports');
+    const zipName = `export-${jobId}.zip`;
+    const filePath = path.join(exportPath, zipName);
+
+    if (!fs.existsSync(filePath)) {
+      throw new NotFoundException('Export file not found or has expired.');
+    }
+
+    res.download(filePath, zipName, (err) => {
+      if (err && !res.headersSent) {
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          success: false,
+          message: 'Could not download the file.',
+        });
+      }
+    });
   }
 }

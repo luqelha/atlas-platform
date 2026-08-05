@@ -9,6 +9,7 @@ import {
   UseGuards,
   Request,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
 import { ContentService } from '../services/content.service';
@@ -21,10 +22,12 @@ import { RbacGuard } from '../../../common/guards/rbac.guard';
 import { CurrentTenant } from '../../../common/decorators/current-tenant.decorator';
 import { Permissions } from '../../../common/decorators/permissions.decorator';
 import { Permission } from '../../../common/enums/permission.enum';
+import { CacheInterceptor } from '../../../common/interceptors/cache.interceptor';
 
 @ApiTags('contents')
 @Controller('contents')
 @UseGuards(JwtAuthGuard, RbacGuard)
+@UseInterceptors(CacheInterceptor)
 @ApiBearerAuth()
 @ApiHeader({
   name: 'x-tenant-id',

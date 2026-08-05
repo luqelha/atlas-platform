@@ -1,6 +1,6 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { createClient, RedisClientType } from 'redis';
+import { RedisService } from '../redis/redis.service';
 import { v4 as uuidv4 } from 'uuid';
 
 export enum JobStatus {
@@ -12,19 +12,15 @@ export enum JobStatus {
 
 @Injectable()
 export class ExportService {
-  private redisClient: RedisClientType;
-
-  constructor(@Inject('RABBITMQ_SERVICE') private readonly rabbitClient: ClientProxy) {
-    this.redisClient = createClient({
-      url: process.env.REDIS_URL || 'redis://localhost:6379',
-    });
-    this.redisClient.connect().catch(console.error);
-  }
+  constructor(
+    @Inject('RABBITMQ_SERVICE') private readonly rabbitClient: ClientProxy,
+    private readonly redisService: RedisService,
+  ) {}
 
   async createJob(startDate: string, endDate: string) {
     const jobId = uuidv4();
 
-    await this.redisClient.set(
+    await this.redisService.set(
       jobId,
       JSON.stringify({
         status: JobStatus.PENDING,
@@ -49,7 +45,7 @@ export class ExportService {
   }
 
   async getJobStatus(jobId: string) {
-    const statusStr = await this.redisClient.get(jobId);
+    const statusStr = await this.redisService.get(jobId);
     if (!statusStr) {
       throw new NotFoundException('Job not found!');
     }

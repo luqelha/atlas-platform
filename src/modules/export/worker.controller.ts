@@ -1,20 +1,16 @@
 import { Controller, Logger } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { CompressionService } from './compression.service';
-import { createClient, RedisClientType } from 'redis';
+import { RedisService } from '../redis/redis.service';
 import { JobStatus } from './export.service';
 
 @Controller('worker')
 export class WorkerController {
   private readonly logger = new Logger(WorkerController.name);
-  private redisClient: RedisClientType;
-
-  constructor(private readonly compressionService: CompressionService) {
-    this.redisClient = createClient({
-      url: process.env.REDIS_URL || 'redis://localhost:6379',
-    });
-    this.redisClient.connect().catch(console.error);
-  }
+  constructor(
+    private readonly compressionService: CompressionService,
+    private readonly redisService: RedisService,
+  ) {}
 
   @EventPattern('export_logs')
   async handleLogExport(@Payload() data: any) {
@@ -22,7 +18,7 @@ export class WorkerController {
     this.logger.log(`Processing Job: ${jobId}`);
 
     try {
-      await this.redisClient.set(
+      await this.redisService.set(
         jobId,
         JSON.stringify({
           status: JobStatus.PROCESSING,
@@ -33,7 +29,7 @@ export class WorkerController {
 
       const result = await this.compressionService.compressLogs(jobId);
 
-      await this.redisClient.set(
+      await this.redisService.set(
         jobId,
         JSON.stringify({
           status: JobStatus.COMPLETED,
@@ -47,7 +43,7 @@ export class WorkerController {
       this.logger.log(`ZIP created: ${result.zipName}`);
       this.logger.log(`Job ${jobId} completed successfully.`);
     } catch (error) {
-      await this.redisClient.set(
+      await this.redisService.set(
         jobId,
         JSON.stringify({
           status: JobStatus.FAILED,

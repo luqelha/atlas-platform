@@ -17,6 +17,7 @@ import { AuditModule } from './modules/audit/audit.module';
 import { ActivityTrackingInterceptor } from './common/interceptors/activity-tracking.interceptor';
 import { CmsModule } from './modules/cms/cms.module';
 import { MediaModule } from './modules/media/media.module';
+import { RedisModule } from './modules/redis/redis.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { MediaModule } from './modules/media/media.module';
     AuditModule,
     CmsModule,
     MediaModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [
