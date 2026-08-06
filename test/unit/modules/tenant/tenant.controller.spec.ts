@@ -15,8 +15,6 @@ const mockTenantService = {
 
 describe('TenantController', () => {
   let controller: TenantController;
-  let service: TenantService;
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [TenantController],
@@ -34,7 +32,6 @@ describe('TenantController', () => {
       .compile();
 
     controller = module.get<TenantController>(TenantController);
-    service = module.get<TenantService>(TenantService);
   });
 
   afterEach(() => {

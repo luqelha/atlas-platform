@@ -36,8 +36,6 @@ describe('Media Module (e2e)', () => {
   });
 
   describe('Media Upload', () => {
-    let mediaId: string;
-
     it('/media/upload (POST)', async () => {
       const response = await request(app.getHttpServer())
         .post('/media/upload')
@@ -48,7 +46,6 @@ describe('Media Module (e2e)', () => {
 
       expect(response.body).toHaveProperty('id');
       expect(response.body).toHaveProperty('url');
-      mediaId = response.body.id;
     });
 
     it('/media (GET)', async () => {

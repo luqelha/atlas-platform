@@ -8,8 +8,6 @@ describe('CMS Module (e2e)', () => {
   let prisma: PrismaService;
   let tenantToken: string;
   let tenantId: string;
-  let authorId: string;
-
   beforeAll(async () => {
     app = await createTestApp();
     prisma = app.get(PrismaService);
@@ -20,7 +18,6 @@ describe('CMS Module (e2e)', () => {
     const setup = await setupTestUserAndTenant(app, 'ADMIN');
     tenantToken = setup.token;
     tenantId = setup.tenant.id;
-    authorId = setup.user.id;
   });
 
   afterAll(async () => {
@@ -28,8 +25,6 @@ describe('CMS Module (e2e)', () => {
   });
 
   describe('Category', () => {
-    let categoryId: string;
-
     it('/categories (POST)', async () => {
       const response = await request(app.getHttpServer())
         .post('/categories')
@@ -44,7 +39,6 @@ describe('CMS Module (e2e)', () => {
 
       expect(response.body).toHaveProperty('id');
       expect(response.body.name).toBe('News');
-      categoryId = response.body.id;
     });
 
     it('/categories (GET)', async () => {
@@ -110,8 +104,6 @@ describe('CMS Module (e2e)', () => {
   });
 
   describe('Content', () => {
-    let contentId: string;
-
     it('/contents (POST)', async () => {
       const response = await request(app.getHttpServer())
         .post('/contents')
@@ -127,7 +119,6 @@ describe('CMS Module (e2e)', () => {
 
       expect(response.body).toHaveProperty('id');
       expect(response.body.title).toBe('Hello World');
-      contentId = response.body.id;
     });
 
     it('/contents (GET)', async () => {
