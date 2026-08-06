@@ -32,7 +32,9 @@ describe('Media Module (e2e)', () => {
     if (fs.existsSync(testFilePath)) {
       fs.unlinkSync(testFilePath);
     }
-    await app.close();
+    if (app) {
+      await app.close();
+    }
   });
 
   describe('Media Upload', () => {
