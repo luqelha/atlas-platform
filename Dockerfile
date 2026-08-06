@@ -1,27 +1,40 @@
-# Build Stage
-FROM node:18-alpine AS builder
-
+# Dependencies Stage
+FROM node:20-alpine AS deps
 WORKDIR /usr/src/app
-
 COPY package*.json ./
 COPY prisma ./prisma/
+RUN npm ci
 
-RUN npm install
-
+# Build Stage
+FROM node:20-alpine AS builder
+WORKDIR /usr/src/app
+COPY package*.json ./
+COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY . .
-
-RUN npx prisma generate
+RUN npm run prisma:generate
 RUN npm run build
 
-# Production Stage
-FROM node:18-alpine
+# Production Dependencies Stage
+FROM node:20-alpine AS prod-deps
+WORKDIR /usr/src/app
+COPY package*.json ./
+COPY prisma ./prisma/
+RUN npm ci --omit=dev && npm run prisma:generate
 
+# Production Runtime Stage
+FROM node:20-alpine
 WORKDIR /usr/src/app
 
-COPY package*.json ./
-COPY --from=builder /usr/src/app/node_modules ./node_modules
+ENV NODE_ENV=production
+
+# Copy only necessary files
+COPY --from=prod-deps /usr/src/app/node_modules ./node_modules
+COPY --from=prod-deps /usr/src/app/prisma ./prisma
 COPY --from=builder /usr/src/app/dist ./dist
-COPY --from=builder /usr/src/app/prisma ./prisma
+COPY package*.json ./
+
+# Use non-root user for security
+USER node
 
 EXPOSE 3000
 

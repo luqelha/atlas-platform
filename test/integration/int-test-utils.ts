@@ -2,10 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '../../src/database/prisma.service';
 import { CmsModule } from '../../src/modules/cms/cms.module';
 import { DatabaseModule } from '../../src/database/database.module';
+import { RedisModule } from '../../src/modules/redis/redis.module';
 
 export async function createIntegrationTestModule(): Promise<TestingModule> {
   const moduleFixture: TestingModule = await Test.createTestingModule({
-    imports: [DatabaseModule, CmsModule],
+    imports: [DatabaseModule, RedisModule, CmsModule],
   }).compile();
 
   return moduleFixture;
