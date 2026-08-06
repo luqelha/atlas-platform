@@ -5,10 +5,6 @@ export const v1 = () => crypto.randomUUID();
 export const v3 = () => crypto.randomUUID();
 export const v5 = () => crypto.randomUUID();
 export const NIL = '00000000-0000-0000-0000-000000000000';
-export const parse = (_str: string) => Buffer.alloc(16);
-export const stringify = (_arr: any) => crypto.randomUUID();
-export const validate = (_str: string) => true;
-export const version = (_str: string) => 4;
 
 export default {
   v4,
@@ -16,8 +12,4 @@ export default {
   v3,
   v5,
   NIL,
-  parse,
-  stringify,
-  validate,
-  version,
 };
