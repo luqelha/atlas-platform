@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import * as compression from 'compression';
 import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -13,6 +14,9 @@ async function bootstrap() {
 
   // Enable CORS
   app.enableCors();
+
+  // Enable Compression
+  app.use(compression());
 
   // Prefix all routes with /api
   app.setGlobalPrefix('api');
