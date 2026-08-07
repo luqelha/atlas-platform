@@ -146,4 +146,4 @@ Thumbs.db
 DEVELOPMENT.md
 
 # Storage (Zip Exports, Raw Logs, etc.)
-/storage/
+/apps/api/storage/
